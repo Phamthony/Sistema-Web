@@ -1,0 +1,8 @@
+﻿body{
+
+}
+th, td {
+    padding: 12px 10px;
+    vertical-align: middle !important;
+    word-wrap: break-word;
+}

@@ -1,0 +1,248 @@
+﻿@model Proyecto_Final___Pedro_Treviño.Models.Nomina
+
+@{
+    Layout = null;
+
+    string rol = Session["rol"]?.ToString();
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Calcular Nomina</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+    <link href="~/css/estilos.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <script src="~/js/exportarPDF.js"></script>
+
+</head>
+<body>
+    @if (rol == "1")
+    {
+        <div class="container mt-5">
+            <div class="card shadow-lg rounded-4 border-0">
+                <div class="card-header bg-success text-white text-center rounded-top-4">
+                    <h1 class="mb-0">
+                        <i class="bi bi-cash-coin me-2"></i> Cálculo de Nómina
+                    </h1>
+                </div>
+
+                <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm mb-4">
+                    <div class="container-fluid">
+
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+
+                        <div class="collapse navbar-collapse" id="navbarNav">
+                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="~/Home/Acceso">
+                                        <i class="fas fa-home"></i> Inicio
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="~/Home/ListaEmpleados">
+                                        <i class="fas fa-users"></i> Empleados
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="~/Home/CalcularNomina">
+                                        <i class="fas fa-calculator"></i> Nómina
+                                    </a>
+                                </li>
+                            </ul>
+
+                            <ul class="navbar-nav ms-auto">
+                                <li class="nav-item">
+                                    <a class="nav-link text-danger fw-semibold" href="~/Home/CerrarSesion">
+                                        <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+
+                <div class="card-body">
+                    @using (Html.BeginForm())
+                    {
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                @Html.LabelFor(m => m.id_empleado, htmlAttributes: new { @class = "form-label fw-bold" })
+                                @Html.TextBoxFor(m => m.id_empleado, new { @class = "form-control", type = "number", min = "1", placeholder = "ID del empleado" })
+                                @Html.ValidationMessageFor(m => m.id_empleado, null, new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(m => m.FechaEntrada, htmlAttributes: new { @class = "form-label fw-bold" })
+                                @Html.TextBoxFor(m => m.FechaEntrada, new { @class = "form-control", type = "datetime-local" })
+                                @Html.ValidationMessageFor(m => m.FechaEntrada, null, new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(m => m.FechaSalida, htmlAttributes: new { @class = "form-label fw-bold" })
+                                @Html.TextBoxFor(m => m.FechaSalida, new { @class = "form-control", type = "datetime-local" })
+                                @Html.ValidationMessageFor(m => m.FechaSalida, null, new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-success px-4 py-2 rounded-pill shadow-sm">
+                                <i class="bi bi-calculator"></i> Calcular Nómina
+                            </button>
+                        </div>
+                    }
+
+                    @if (Model.SueldoCalculado > 0)
+                    {
+                        <div id="resultadoNomina" class="alert alert-info mt-5 shadow-sm p-4 rounded">
+                            <h4 class="mb-4 text-center fw-semibold">Nomina</h4>
+                            <table class="table table-striped table-bordered rounded">
+                                <tr>
+                                    <th>Empleado</th>
+                                    <td>@Model.Nombre @Model.Apellido</td>
+                                </tr>
+                                <tr>
+                                    <th>Sueldo base</th>
+                                    <td>$@Model.SueldoBase</td>
+                                </tr>
+                                <tr>
+                                    <th>Tipo de sueldo</th>
+                                    <td>@Model.TipoSueldo</td>
+                                </tr>
+                                <tr>
+                                    <th>Horas trabajadas</th>
+                                    <td>@Model.HorasTrabajadas</td>
+                                </tr>
+                                <tr>
+                                    <th>Sueldo calculado</th>
+                                    <td><strong>$@Model.SueldoCalculado</strong></td>
+                                </tr>
+                            </table>
+
+                            <div class="text-center">
+                                <button onclick="descargarPDF()" class="btn btn-danger mt-3 rounded-pill px-4 py-2 shadow-sm">
+                                    <i class="bi bi-file-earmark-pdf-fill"></i> Exportar a PDF
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+    else if (rol == "2")
+    {
+        <div class="container mt-5">
+            <div class="card shadow-lg rounded-4 border-0">
+                <div class="card-header bg-success text-white text-center rounded-top-4">
+                    <h1 class="mb-0">
+                        <i class="bi bi-cash-coin me-2"></i> Cálculo de Nómina
+                    </h1>
+                </div>
+
+                <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm mb-4">
+                    <div class="container-fluid">
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+
+                        <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/Acceso">
+                                <i class="fas fa-home"></i> Inicio
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/CalcularNomina">
+                                <i class="fas fa-calculator"></i> Nómina
+                            </a>
+                        </li>
+                        </ul>
+
+                        <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link text-danger fw-semibold" href="~/Home/CerrarSesion">
+                                <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+                            </a>
+                        </li>
+                        </ul>
+                        </div>
+                    </div>
+                </nav>
+
+                <div class="card-body">
+                    @using (Html.BeginForm())
+                    {
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                @Html.LabelFor(m => m.id_empleado, htmlAttributes: new { @class = "form-label fw-bold" })
+                                @Html.TextBoxFor(m => m.id_empleado, new { @class = "form-control", type = "number", min = "1", placeholder = "ID del empleado" })
+                                @Html.ValidationMessageFor(m => m.id_empleado, null, new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(m => m.FechaEntrada, htmlAttributes: new { @class = "form-label fw-bold" })
+                                @Html.TextBoxFor(m => m.FechaEntrada, new { @class = "form-control", type = "datetime-local" })
+                                @Html.ValidationMessageFor(m => m.FechaEntrada, null, new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-4">
+                                @Html.LabelFor(m => m.FechaSalida, htmlAttributes: new { @class = "form-label fw-bold" })
+                                @Html.TextBoxFor(m => m.FechaSalida, new { @class = "form-control", type = "datetime-local" })
+                                @Html.ValidationMessageFor(m => m.FechaSalida, null, new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-success px-4 py-2 rounded-pill shadow-sm">
+                                <i class="bi bi-calculator"></i> Calcular Nómina
+                            </button>
+                        </div>
+                    }
+
+                    @if (Model.SueldoCalculado > 0)
+                    {
+                        <div id="resultadoNomina" class="alert alert-info mt-5 shadow-sm p-4 rounded">
+                            <h4 class="mb-4 text-center fw-semibold">Nomina</h4>
+                            <table class="table table-striped table-bordered rounded">
+                                <tr>
+                                    <th>Empleado</th>
+                                    <td>@Model.Nombre @Model.Apellido</td>
+                                </tr>
+                                <tr>
+                                    <th>Sueldo base</th>
+                                    <td>$@Model.SueldoBase</td>
+                                </tr>
+                                <tr>
+                                    <th>Tipo de sueldo</th>
+                                    <td>@Model.TipoSueldo</td>
+                                </tr>
+                                <tr>
+                                    <th>Horas trabajadas</th>
+                                    <td>@Model.HorasTrabajadas</td>
+                                </tr>
+                                <tr>
+                                    <th>Sueldo calculado</th>
+                                    <td><strong>$@Model.SueldoCalculado</strong></td>
+                                </tr>
+                            </table>
+
+                            <div class="text-center">
+                                <button onclick="descargarPDF()" class="btn btn-danger mt-3 rounded-pill px-4 py-2 shadow-sm">
+                                    <i class="bi bi-file-earmark-pdf-fill"></i> Exportar a PDF
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</body>
+</html>

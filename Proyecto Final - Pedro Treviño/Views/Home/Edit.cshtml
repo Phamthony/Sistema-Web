@@ -1,0 +1,89 @@
+﻿@model Proyecto_Final___Pedro_Treviño.Models.Empleados
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Edit</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="card shadow-lg rounded-4 border-0">
+            <div class="card-header bg-primary text-white rounded-top-4 text-center">
+                <h1 class="mb-0"><i class="fas fa-user-edit me-2"></i> Editar Empleado</h1>
+            </div>
+
+            <div class="card-body px-5">
+                @using (Html.BeginForm("Actualizar", "Home", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold"><i class="fas fa-id-badge me-1 text-secondary"></i> ID</label>
+                            @Html.EditorFor(model => model.id_empleado, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold"><i class="fas fa-user me-1 text-secondary"></i> Apellido</label>
+                            @Html.EditorFor(model => model.apellido, new { htmlAttributes = new { @class = "form-control" } })
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold"><i class="fas fa-user-tag me-1 text-secondary"></i> Nombre</label>
+                            @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control" } })
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold"><i class="fas fa-envelope me-1 text-secondary"></i> Correo</label>
+                            @Html.EditorFor(model => model.correo, new { htmlAttributes = new { @class = "form-control" } })
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold"><i class="fas fa-user-circle me-1 text-secondary"></i> Usuario</label>
+                            @Html.EditorFor(model => model.usuario, new { htmlAttributes = new { @class = "form-control" } })
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold"><i class="fas fa-lock me-1 text-secondary"></i> Contraseña</label>
+                            @Html.EditorFor(model => model.contrasena, new { htmlAttributes = new { @class = "form-control", @type = "password" } })
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold"><i class="fas fa-user-shield me-1 text-secondary"></i> Rol</label>
+                            @Html.EditorFor(model => model.rol, new { htmlAttributes = new { @class = "form-control" } })
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold"><i class="fas fa-clock me-1 text-secondary"></i> Categoría</label>
+                            @Html.EditorFor(model => model.categoria, new { htmlAttributes = new { @class = "form-control" } })
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold"><i class="fas fa-dollar-sign me-1 text-secondary"></i> Sueldo</label>
+                            @Html.EditorFor(model => model.sueldo, new { htmlAttributes = new { @class = "form-control" } })
+                        </div>
+                    </div>
+
+                    <div class="text-end mt-4">
+                        <button type="submit" class="btn btn-success rounded-pill px-4 shadow-sm">
+                            <i class="fas fa-save me-2"></i> Actualizar
+                        </button>
+                        <a href="@Url.Action("ListaEmpleados", "Home")" class="btn btn-outline-secondary rounded-pill px-4 shadow-sm ms-2">
+                            <i class="fas fa-arrow-left me-2"></i> Regresar
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</body>
+</html>
